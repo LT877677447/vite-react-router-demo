@@ -1,5 +1,5 @@
-import { Form, useLoaderData } from "react-router-dom";
-import { getContact } from '../contacts'
+import { Form, useLoaderData, redirect } from "react-router-dom";
+import { getContact, updateContact } from '../contacts'
 
 export async function loader({ params }) {
     console.log(`edit - 通过id加载联系人 - ${params.contactId}`);
@@ -7,7 +7,16 @@ export async function loader({ params }) {
     return { contact }
 }
 
+export async function action({ request, params }) {
+    console.log('edit action');
+    const formData = await request.formData()
+    const updates = Object.fromEntries(formData)
+    await updateContact(params.contactId, updates)
+    return redirect(`/contacts/${params.contactId}`)
+}
+
 export default function EditContact() {
+    console.log('初始化edit联系人组件');
     const { contact } = useLoaderData();
 
     return (

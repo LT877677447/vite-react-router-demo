@@ -2,8 +2,8 @@ import { Form, useLoaderData } from "react-router-dom";
 import { getContact } from '../contacts'
 
 export async function loader({ params }) {
-    console.log(`通过id加载联系人 - ${params.contactId}`);
     const contact = await getContact(params.contactId)
+    console.log(`通过id加载联系人 - ${JSON.stringify(contact)}`);
     return { contact }
 }
 
@@ -17,8 +17,8 @@ export default function Contact() {
     //     favorite: true,
     // };
 
-    const contact = useLoaderData()
-
+    const { contact } = useLoaderData()
+    console.log('初始化联系人组件', contact);
     return (
         <div id="contact">
             <div>

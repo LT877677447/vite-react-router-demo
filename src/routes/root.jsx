@@ -2,7 +2,6 @@ import { Outlet, Link, useLoaderData, Form } from 'react-router-dom'
 import { getContacts, createContact } from '../contacts'
 
 export async function action(paramObj) {
-    console.log('paramObj', paramObj);
     const contact = await createContact()
     return { contact }
 }
