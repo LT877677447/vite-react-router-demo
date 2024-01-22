@@ -1,5 +1,6 @@
 import { Form, useLoaderData, redirect } from "react-router-dom";
 import { getContact, updateContact } from '../contacts'
+import { useNavigate } from "react-router-dom";
 
 export async function loader({ params }) {
     console.log(`edit - 通过id加载联系人 - ${params.contactId}`);
@@ -16,8 +17,8 @@ export async function action({ request, params }) {
 }
 
 export default function EditContact() {
-    console.log('初始化edit联系人组件');
     const { contact } = useLoaderData();
+    const navigate = useNavigate()
 
     return (
         <Form method="post" id="contact-form">
@@ -67,7 +68,14 @@ export default function EditContact() {
             </label>
             <p>
                 <button type="submit">Save</button>
-                <button type="button">Cancel</button>
+                <button
+                    type="button"
+                    onClick={() => {
+                        navigate(-1)
+                    }}
+                >
+                    Cancel
+                </button>
             </p>
         </Form>
     );

@@ -6,6 +6,8 @@ import './index.css'
 import ErrorPage from './error-page.jsx'
 import Contact, { loader as contactLoader } from './routes/contact.jsx'
 import EditContact, { loader as editContactLoader, action as editAction } from './routes/edit.jsx'
+import { action as deleteAction } from './routes/destory.jsx'
+import Index from './routes/index.jsx'
 
 const router = createBrowserRouter([
   {
@@ -15,6 +17,7 @@ const router = createBrowserRouter([
     loader: rootLoader,
     action: rootAction,
     children: [
+      {index: true, element: <Index></Index>},
       {
         path: 'contacts/:contactId',
         element: <Contact></Contact>,
@@ -25,6 +28,11 @@ const router = createBrowserRouter([
         element: <EditContact></EditContact>,
         loader: editContactLoader,
         action: editAction,
+      },
+      {
+        path: 'contacts/:contactId/destroy',
+        action: deleteAction,
+        errorElement: <div>error!</div>,
       }
     ],
   },

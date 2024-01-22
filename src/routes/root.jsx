@@ -1,25 +1,29 @@
-import { Outlet, Link, useLoaderData, Form } from 'react-router-dom'
+import { Outlet, Link, useLoaderData, Form, redirect, NavLink } from 'react-router-dom'
 import { getContacts, createContact } from '../contacts'
+import { useNavigation } from 'react-router-dom';
 
 export async function action(paramObj) {
+    console.log('root.jsx action');
     const contact = await createContact()
-    return { contact }
+    return redirect(`/contacts/${contact.id}/edit`)
 }
 
-export async function loader() {
-    console.log('加载全部联系人');
-    const contacts = await getContacts()
+export async function loader({ request }) {
+    console.log('root.jsx loader');
+    const q = new URL(request.url).searchParams.get('q')
+    const contacts = await getContacts(q)
     return { contacts }
 }
 
 export default function Root() {
     const { contacts } = useLoaderData()
+    const navigation = useNavigation()
     return (
         <>
             <div id="sidebar">
                 <h1>React Router Contacts</h1>
                 <div>
-                    <form id="search-form" role="search">
+                    <Form id="search-form" role="search">
                         <input
                             id="q"
                             aria-label="Search contacts"
@@ -36,7 +40,7 @@ export default function Root() {
                             className="sr-only"
                             aria-live="polite"
                         ></div>
-                    </form>
+                    </Form>
                     <Form method="post">
                         <button type="submit">New</button>
                     </Form>
@@ -46,7 +50,10 @@ export default function Root() {
                         <ul>
                             {contacts.map((contact) => (
                                 <li key={contact.id}>
-                                    <Link to={`contacts/${contact.id}`}>
+                                    <NavLink
+                                        to={`contacts/${contact.id}`}
+                                        className={({ isActive, isPending }) => isActive ? 'active' : isPending ? 'pending' : ''}
+                                    >
                                         {contact.first || contact.last ? (
                                             <>
                                                 {contact.first} {contact.last}
@@ -55,7 +62,7 @@ export default function Root() {
                                             <i>No Name</i>
                                         )}{" "}
                                         {contact.favorite && <span>★</span>}
-                                    </Link>
+                                    </NavLink>
                                 </li>
                             ))}
                         </ul>
@@ -75,7 +82,7 @@ export default function Root() {
                     </ul> */}
                 </nav>
             </div>
-            <div id="detail">
+            <div id="detail" className={navigation.state === 'loading' ? 'loading' : ''}>
                 <Outlet></Outlet>
             </div>
         </>
